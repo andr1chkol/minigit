@@ -1,21 +1,22 @@
 package minigit.core;
 
-import minigit.commands.Commands;
+import minigit.commands.Command;
 import minigit.commands.InitCommand;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class CommandDispatcher {
-    private final HashMap<String, Commands> commands =  new HashMap<>();
+    private final Map<String, Command> commands =  new HashMap<>();
 
     public CommandDispatcher(){
         commands.put("init", new InitCommand());
     }
 
     public void dispatch(CommandRequest request){
-        Commands command = commands.get(request.getCommand());
+        Command command = commands.get(request.getCommand());
         if(command == null){
-            System.out.println("No command found for " + request.getCommand());
+            System.out.println("Unknown" + request.getCommand());
             return;
         }
         command.execute(request);

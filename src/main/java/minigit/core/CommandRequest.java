@@ -4,7 +4,7 @@ import java.util.List;
 
 public class CommandRequest {
     private final String command;
-    private List<String> args;
+    private final List<String> args;
     public CommandRequest(String command, List<String> arguments) {
         this.command = command;
         this.args = arguments;
