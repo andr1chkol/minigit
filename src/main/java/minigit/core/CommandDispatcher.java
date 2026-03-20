@@ -1,6 +1,7 @@
 package minigit.core;
 
 import minigit.commands.Command;
+import minigit.commands.CommitCommand;
 import minigit.commands.InitCommand;
 import minigit.commands.AddCommand;
 
@@ -13,6 +14,7 @@ public class CommandDispatcher {
     public CommandDispatcher(){
         commands.put("init", new InitCommand());
         commands.put("add", new AddCommand());
+        commands.put("commit", new CommitCommand());
     }
 
     public void dispatch(CommandRequest request){
