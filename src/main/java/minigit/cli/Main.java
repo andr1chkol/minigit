@@ -12,6 +12,7 @@ public class Main {
             System.out.println("No command provided");
             return;
         }
+
         String command = args[0];
         List<String> arguments = Arrays.asList(args).subList(1, args.length);
 
