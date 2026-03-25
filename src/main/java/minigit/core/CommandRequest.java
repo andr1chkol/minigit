@@ -13,6 +13,7 @@ public class CommandRequest {
     public String getCommand() {
         return command;
     }
+
     public List<String> getArgs() {
         return args;
     }

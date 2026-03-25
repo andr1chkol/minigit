@@ -1,9 +1,6 @@
 package minigit.core;
 
-import minigit.commands.Command;
-import minigit.commands.CommitCommand;
-import minigit.commands.InitCommand;
-import minigit.commands.AddCommand;
+import minigit.commands.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +12,7 @@ public class CommandDispatcher {
         commands.put("init", new InitCommand());
         commands.put("add", new AddCommand());
         commands.put("commit", new CommitCommand());
+        commands.put("log", new LogCommand());
     }
 
     public void dispatch(CommandRequest request){
