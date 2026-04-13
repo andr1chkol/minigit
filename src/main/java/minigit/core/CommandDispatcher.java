@@ -13,6 +13,7 @@ public class CommandDispatcher {
         commands.put("add", new AddCommand());
         commands.put("commit", new CommitCommand());
         commands.put("log", new LogCommand());
+        commands.put("status", new StatusCommand());
     }
 
     public void dispatch(CommandRequest request){
