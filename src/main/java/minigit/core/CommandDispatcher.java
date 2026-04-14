@@ -14,6 +14,7 @@ public class CommandDispatcher {
         commands.put("commit", new CommitCommand());
         commands.put("log", new LogCommand());
         commands.put("status", new StatusCommand());
+        commands.put("checkout", new CheckoutCommand());
     }
 
     public void dispatch(CommandRequest request){

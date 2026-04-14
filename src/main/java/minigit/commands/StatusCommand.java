@@ -50,7 +50,7 @@ public class StatusCommand implements Command {
                 throw new RuntimeException("Error reading file: " + entryPath, e);
             }
         }
-        System.out.println("Modified: ");
+        System.out.println("\nModified: ");
         for (String modifiedPath : modified) {
             System.out.println(modifiedPath);
         }
@@ -80,7 +80,7 @@ public class StatusCommand implements Command {
                 untrackedFiles.add(file);
             }
         }
-        System.out.println("Untracked: ");
+        System.out.println("\nUntracked: ");
         for (String file : untrackedFiles) {
             System.out.println(file);
         }

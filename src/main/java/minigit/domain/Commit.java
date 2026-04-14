@@ -5,8 +5,8 @@ import java.util.List;
 
 public class Commit {
     private String id;
-    private String message;
-    private String parentId;
+    private final String message;
+    private final String parentId;
     private final List<IndexEntry> indexEntries;
 
     public Commit(String message, String parentId, List<IndexEntry> entries){
