@@ -21,8 +21,7 @@ public class IndexStore {
         try {
             List<String> lines = Files.readAllLines(indexPath);
             for(String line : lines){
-                String[] substr = line.split("\\|");
-                indexEntries.add(new IndexEntry(Path.of(substr[0]), substr[1]));
+                indexEntries.add(parseEntry(line));
             }
         }
         catch (IOException e) {
@@ -36,7 +35,7 @@ public class IndexStore {
 
         try{
             for(IndexEntry indexEntry : indexEntries){
-                lines.add(indexEntry.getFilePath().toString() + "|" + indexEntry.getBlobId());
+                lines.add(formatEntry(indexEntry));
             }
             Files.write(indexPath, lines);
         }
@@ -44,5 +43,14 @@ public class IndexStore {
         catch (IOException e) {
             throw new RuntimeException("Failed to write index", e);
         }
+    }
+
+    private IndexEntry parseEntry(String line) {
+        String[] substr = line.split("\\|");
+        return new IndexEntry(Path.of(substr[0]), substr[1]);
+    }
+
+    private String formatEntry(IndexEntry indexEntry) {
+        return indexEntry.getFilePath().toString() + "|" + indexEntry.getBlobId();
     }
 }

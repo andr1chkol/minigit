@@ -1,6 +1,7 @@
 package minigit.commands;
 
 import minigit.core.CommandRequest;
+import minigit.core.RepositoryPaths;
 import minigit.domain.IndexEntry;
 import minigit.storage.IndexStore;
 import minigit.util.Hashing;
@@ -15,13 +16,11 @@ import java.util.Set;
 
 public class StatusCommand implements Command {
     public void execute(CommandRequest request) {
-        Path repoPath = Path.of(System.getProperty("user.dir"), ".minigit");
-        Path workingDir = Path.of(System.getProperty("user.dir"));
+        RepositoryPaths paths = RepositoryPaths.fromCurrentDirectory();
+        paths.ensureInitialized();
+        Path repoPath = paths.repoPath();
+        Path workingDir = paths.workingDir();
         Set<String> trackedFiles = new HashSet<>();
-
-        if (Files.notExists(repoPath)) {
-            throw new RuntimeException("Repository not initialized");
-        }
 
         IndexStore indexStore = new IndexStore(repoPath);
         List<IndexEntry> index = indexStore.readIndex();
@@ -32,6 +31,20 @@ public class StatusCommand implements Command {
             trackedFiles.add(staged.getFilePath().toString());
         }
 
+        Set<String> modified = findModifiedFiles(index);
+        System.out.println("\nModified: ");
+        for (String modifiedPath : modified) {
+            System.out.println(modifiedPath);
+        }
+
+        List<String> untrackedFiles = findUntrackedFiles(workingDir, trackedFiles);
+        System.out.println("\nUntracked: ");
+        for (String file : untrackedFiles) {
+            System.out.println(file);
+        }
+    }
+
+    private Set<String> findModifiedFiles(List<IndexEntry> index) {
         Set<String> modified = new HashSet<>();
         for (IndexEntry entry : index) {
             Path entryPath = entry.getFilePath();
@@ -42,47 +55,51 @@ public class StatusCommand implements Command {
                 }
                 byte[] data = Files.readAllBytes(entryPath);
                 String entryHash = Hashing.sha1(data);
-                if (!entryHash.equals(entry.getBlobId())){
+                if (!entryHash.equals(entry.getBlobId())) {
                     modified.add(entry.getFilePath().toString());
                 }
-            }
-            catch (IOException e){
+            } catch (IOException e) {
                 throw new RuntimeException("Error reading file: " + entryPath, e);
             }
         }
-        System.out.println("\nModified: ");
-        for (String modifiedPath : modified) {
-            System.out.println(modifiedPath);
-        }
+        return modified;
+    }
 
-        List<String> allFiles = new ArrayList<>();
+    private List<String> findUntrackedFiles(Path workingDir, Set<String> trackedFiles) {
+        List<String> allFiles = collectFiles(workingDir);
         List<String> untrackedFiles = new ArrayList<>();
-        try{
-            Files.walk(workingDir)
-                    .filter(Files::isRegularFile)
-                    .forEach(file -> {
-                        Path relativePath = workingDir.relativize(file);
-                        allFiles.add(relativePath.toString());
-                    });
-        }catch (IOException e){
-            throw new RuntimeException("Error walking: " + workingDir, e);
-        }
 
         for (String file : allFiles) {
-            if (file.startsWith(".minigit")
-                    || file.startsWith(".git")
-                    || file.startsWith("build")
-                    || file.startsWith(".gradle")
-                    || file.startsWith(".idea")) {
+            if (shouldIgnore(file)) {
                 continue;
             }
             if (!trackedFiles.contains(file)) {
                 untrackedFiles.add(file);
             }
         }
-        System.out.println("\nUntracked: ");
-        for (String file : untrackedFiles) {
-            System.out.println(file);
+        return untrackedFiles;
+    }
+
+    private List<String> collectFiles(Path workingDir) {
+        List<String> allFiles = new ArrayList<>();
+        try {
+            Files.walk(workingDir)
+                    .filter(Files::isRegularFile)
+                    .forEach(file -> {
+                        Path relativePath = workingDir.relativize(file);
+                        allFiles.add(relativePath.toString());
+                    });
+        } catch (IOException e) {
+            throw new RuntimeException("Error walking: " + workingDir, e);
         }
+        return allFiles;
+    }
+
+    private boolean shouldIgnore(String file) {
+        return file.startsWith(".minigit")
+                || file.startsWith(".git")
+                || file.startsWith("build")
+                || file.startsWith(".gradle")
+                || file.startsWith(".idea");
     }
 }

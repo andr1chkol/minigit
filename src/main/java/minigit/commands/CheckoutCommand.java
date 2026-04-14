@@ -1,6 +1,7 @@
 package minigit.commands;
 
 import minigit.core.CommandRequest;
+import minigit.core.RepositoryPaths;
 import minigit.domain.Commit;
 import minigit.domain.IndexEntry;
 import minigit.storage.CommitStore;
@@ -18,10 +19,9 @@ public class CheckoutCommand implements Command {
             throw new RuntimeException("No arguments specified");
         }
 
-        Path repoPath = Path.of(System.getProperty("user.dir"), ".minigit");
-        if (Files.notExists(repoPath)) {
-            throw new RuntimeException("Repository not initialized");
-        }
+        RepositoryPaths paths = RepositoryPaths.fromCurrentDirectory();
+        paths.ensureInitialized();
+        Path repoPath = paths.repoPath();
 
         String commitId = request.getArgs().getFirst();
         CommitStore commitStore = new CommitStore(repoPath);
@@ -32,8 +32,7 @@ public class CheckoutCommand implements Command {
         for (IndexEntry indexEntry : indexEntries) {
             byte[] data = objectStore.readBlob(indexEntry.getBlobId());
 
-            Path workingDir = Path.of(System.getProperty("user.dir"));
-            Path dataPath = workingDir.resolve(indexEntry.getFilePath());
+            Path dataPath = paths.workingDir().resolve(indexEntry.getFilePath());
 
 
             try{

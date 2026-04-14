@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CommandDispatcher {
-    private final Map<String, Command> commands =  new HashMap<>();
+    private final Map<String, Command> commands = new HashMap<>();
 
-    public CommandDispatcher(){
+    public CommandDispatcher() {
         commands.put("init", new InitCommand());
         commands.put("add", new AddCommand());
         commands.put("commit", new CommitCommand());
@@ -17,9 +17,9 @@ public class CommandDispatcher {
         commands.put("checkout", new CheckoutCommand());
     }
 
-    public void dispatch(CommandRequest request){
+    public void dispatch(CommandRequest request) {
         Command command = commands.get(request.getCommand());
-        if(command == null){
+        if (command == null) {
             System.out.println("Unknown" + request.getCommand());
             return;
         }

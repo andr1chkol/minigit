@@ -1,6 +1,7 @@
 package minigit.commands;
 
 import minigit.core.CommandRequest;
+import minigit.core.RepositoryPaths;
 import minigit.domain.IndexEntry;
 import minigit.storage.IndexStore;
 import minigit.storage.ObjectStore;
@@ -23,10 +24,9 @@ public class AddCommand implements Command {
             throw new RuntimeException("File " + filePath + " does not exist");
         }
 
-        Path repoPath = Path.of(System.getProperty("user.dir"), ".minigit");
-        if (Files.notExists(repoPath)) {
-            throw new RuntimeException("Repository not initialized");
-        }
+        RepositoryPaths paths = RepositoryPaths.fromCurrentDirectory();
+        paths.ensureInitialized();
+        Path repoPath = paths.repoPath();
 
         try {
             byte[] data = Files.readAllBytes(filePath);
@@ -57,4 +57,3 @@ public class AddCommand implements Command {
         }
     }
 }
-

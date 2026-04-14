@@ -1,6 +1,7 @@
 package minigit.commands;
 
 import minigit.core.CommandRequest;
+import minigit.core.RepositoryPaths;
 import minigit.domain.Commit;
 import minigit.storage.CommitStore;
 
@@ -12,14 +13,13 @@ import java.util.List;
 public class LogCommand implements Command {
     public void execute(CommandRequest request){
 
-        Path repoPath = Path.of(System.getProperty("user.dir"), ".minigit");
-        if (Files.notExists(repoPath)) {
-            throw new RuntimeException("Repository not initialized");
-        }
+        RepositoryPaths paths = RepositoryPaths.fromCurrentDirectory();
+        paths.ensureInitialized();
+        Path repoPath = paths.repoPath();
 
         try{
             String currentId;
-            Path mainRef = repoPath.resolve("refs").resolve("heads").resolve("main");
+            Path mainRef = paths.mainRefPath();
 
             List<String> mainLine = Files.readAllLines(mainRef);
 
