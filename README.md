@@ -1,6 +1,6 @@
 # MiniGit
 
-MiniGit is a small Git-inspired command-line tool written in Java.
+MiniGit is a lightweight Git-inspired command-line tool implemented in Java.
 
 It implements a simplified version control workflow with repository initialization, staging, commits, logs, status checks, and checkout by commit id.
 
@@ -145,3 +145,8 @@ Current limitations:
 ## Project Goal
 
 The goal of this project was to deepen my Java Core knowledge, apply it in practice, and better understand the structure and internal workflow of Git-like version control systems.
+
+## Requirements
+
+- Java 21 or newer
+- Gradle Wrapper included in the repository
