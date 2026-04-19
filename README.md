@@ -21,6 +21,11 @@ It implements a simplified version control workflow with repository initializati
 - SHA-1 hashing
 - File-based object storage
 
+## Requirements
+
+- Java 21 or newer
+- Gradle Wrapper included in the repository
+
 ## Project Structure
 
 ```text
@@ -146,7 +151,3 @@ Current limitations:
 
 The goal of this project was to deepen my Java Core knowledge, apply it in practice, and better understand the structure and internal workflow of Git-like version control systems.
 
-## Requirements
-
-- Java 21 or newer
-- Gradle Wrapper included in the repository
